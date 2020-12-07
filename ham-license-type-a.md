@@ -77,6 +77,21 @@ A类考试共30道单选题，时间40分钟，对25道（含）以上合格。
 强调业余无线电爱好者系指**经正式批准（有证）**的、对无线电技术有兴趣的人，其兴趣纯系个人爱好而不涉及谋取利润。
 
 ## A.1.3 无线电管制
+
+无线电管制是指**在特定时间**和**特定区域内**依法采取的对**无线电波的发射、辐射和传播实施的强制性管理**。管理措施包括：
+- **限制或者禁止业余无线电台（站）的使用**
+- **对特定的无线电频率实施技术阻断**
+
+决定实施无线电管制的机构为
+- **在全国范围内或者跨省、自治区、直辖市实施，由国务院和中央军事委员会决定**
+- **在省、自治区、直辖市范围内实施，由省、自治区、直辖市人民政府和相关军区决定**
+
+违反无线电管制命令和无线电管制指令的由**国家无线电管理机构或者省、自治区、直辖市无线电管理机构**；违反治安管理规定者由**公安机关**处罚。处罚包括（需要记忆）：
+- 责令改正
+- 拒不改正的，关闭、查封、暂扣或者拆除相关设备
+- 情节严重的，吊销电台执照
+- 违反治安管理规定的，由公安机关处罚
+
 ## A.1.4 业余电台的分类管理
 
 不同类别业余无线电台的主要区别在于允许发射的**频率范围**和**最大发射功率**。
@@ -370,20 +385,246 @@ c) 可要求保护不受来自将来可能指配频率的同一业务或其他�
 
 业余电台通信受到违法电台或者不明电台的有害干扰时，应**不予理睬，收集有关信息并向无线电管理机构举报**。
 
+
 ### A.1.13.2 关于业余无线电应急通信的规定
 
-在突发重大自然灾害等紧急情况下，业余无线电台**才可以和非业余无线电台进行规定内容的通信**。内容限于**与抢险救灾直接相关的紧急事务或者应急救援相关部门交办的任务**。
+在突发重大自然灾害等紧急情况下，业余无线电台**才可以和非业余无线电台进行规定内容的通信**。内容限于**与抢险救灾直接相关的紧急事务**或者**应急救援相关部门交办的任务**。
 
 ### A.1.13.3 业余无线电中继台管理规定和使用规范
+
+业余中继台的设置和技术参数等应**符合国家以及设台地的地方无线电管理机构的规定**。
+
+业余中继台必须
+- **设专人负责监控和管理工作，配备有效的遥控手段，保证造成有害干扰时及时停止发射**。
+- **向其覆盖区域内的所有业余无线电台提供平等的服务，并将使用业余中继台所需的各项技术参数公开**
+
+选择144MHz或430MHz业余模拟调频中继台同频段收发频差的原则是**采用业余无线电标准频差，即144MHz频段600kHz，430MHz频段5MHz**。
+
+业余中继台的使用原则是**除必要的短暂通信外，应保持业余中继台具有足够的空闲时间，以便随时响应突发灾害应急呼叫**。
+
+如果你知道另一个电台的呼号，想要在中继上呼叫他，你应该**呼叫对方的呼号，并报出自己的呼号**。
+
 ### A.1.13.4 业余电台通联卡片及电台日志
+
+法规和国际业余无线电惯例要求业余电台日志记载的必要基本内容是（英文缩写也要记忆）:
+- 通信时间 DATE、TIME
+- 通信频率 FREQ
+- 通信模式 MODE
+- 对方呼号 CALL（对方）
+- 双方信号报告 RST（双方）
+
+- 迫切需要方卡回寄卡片时，应直接向对方地址邮寄卡片并附加SASE TODO
+- 不是作为联络或收听证明而交换QSL卡片时，应填上“Eye ball QSO”等有关说明，不应赠送空白卡片 TODO
+
+
 ## A.1.14 业余电台管理执法检查和违法处罚
 ### A.1.14.1 业余电台管理执法检查
+
+业余无线电台设置、使用人应当接受**无线电管理机构或者其委托单位的监督检查**。
+
 ### A.1.14.2 业余电台的违法处罚
+
+[**《中华人民共和国刑法》**](http://www.npc.gov.cn/wxzl/wxzl/2000-12/17/content_4680.htm)第二百八十八条    违反国家规定，擅自设置、使用无线电台（站），或者擅自占用频率，经责令停止使用后拒不停止使用，干扰无线电通讯正常进行，造成严重后果的，处三年以下有期徒刑、拘役或者管制，并处或者单处罚金。
 
 # A.2. 无线电通信程序、方法
 ## A.2.1业余无线电频率的使用规范
+
+**任何核准的业余电台对频率享有平等的频率使用权**。  
+例：某俱乐部约定了一个成员业余电台之间交流技术的网络频率，当遇有其他业余电台按通信惯例要求参加通信时，应无条件欢迎加入。
+
+业余电台在发射调试信号进行发射功率和天线驻波比等检查时必须**先将频率设置到无人使用的空闲频率、偏离常用的热点频率**。
+
 ## A.2.2 业余电台通信程序
+
+业余电台在发起呼叫前应**先守听一段时间，确保没有其他电台正在使用频率**。通过守听，没有听到信号还不足以确认频率空闲，因为有时听不到通信双方中的另一方，贸然呼叫会对已有的通信造成干扰。为避免这种情况，应该：**先询问“有人使用频率吗”？确认没有应答方能发起呼叫**。英语表达示例（需要记忆）：
+- Is the frequency in use？
+- Is any body in the frequency？
+- Any body here？
+
+业余电台（以BH1ZZZ为例）用话音发起CQ呼叫的正确格式为：**CQ、CQ、CQ。BH1ZZZ呼叫。Bravo Hotel One Zulu Zulu Zulu呼叫，BH1ZZZ呼叫。听到请回答。**或英文**CQ CQ CQ.This is BH1ZZZ. Bravo Hotel One Zulu Zulu Zulu, BH1ZZZ is calling. I’m standing by.**。
+
+业余电台BH1ZZZ用话音呼叫BH8YYY的正确格式为**BH8YYY、BH8YYY、BH8YYY。BH1ZZZ呼叫。Bravo Hotel One Zulu Zulu Zulu，BH1ZZZ呼叫。听到请回答。**。英文为**Bravo Hotel Eight Yankee Yankee Yankee, Bravo Hotel Eight Yankee Yankee Yankee, Bravo Hotel Eight Yankee Yankee Yankee.This is Bravo Hotel One Zulu Zulu Zulu. Bravo Hotel One Zulu Zulu Zulu, Bravo Hotel One Zulu Zulu Zulu is calling. I’m standing by.**。
+
+BH1ZZZ希望加入两个电台正在通信中的谈话，正确的方法为：**在双方对话的间隙，短暂发射一次“Break in！”或“插入！”，如得到响应，再说明本台呼号 “BH1ZZZ请求插入”，等对方正式表示邀请后，方能加入**。以请求插入的方式加入两个电台正在通信中的谈话，应**确认自己的加入不会影响原通信双方的乐趣**。
+
+业余电台之间进行通信，必须相互正确发送和接收的信息为（记忆）：
+- 本台呼号
+- 对方呼号
+- 信号报告
+
+当一部电台在呼叫CQ时，他的意思是**非特指地呼叫任何一部电台**。
+
+[//]: #Mark
+回答一个CQ呼叫时**先报出对方的呼号，再报出自己的呼号**。
+
+如果其他电台报告你在2米波段的信号刚才非常强，但是突然变弱或不可辨，这时你应当**稍稍移动一下自己的位置，有时信号无规律反射造成的多径效应可能导致失真**。
+
+**将一个频率作为一个频道存储在电台中**可以让你快速切换到一个你经常使用的频率。
+
 ## A.2.3 业余电台通信常用的缩语和简语
+
+Q简语是一种标准化的三字母通信简略语，因短语开头字母均为“Q”而得名。（加粗的为考试可能会考的，需重点记忆）
+- Q简语 	问句含义 	答句含义 TODO mark
+- QRA 	你的电台名称是？ 	我的电台名称是...
+- QRB 	你台离我台多远？ 	我们相距约为...
+- QRG 	我的准确频率是多少？ 	你的准确频率是...
+- QRI 	我的音调如何？ 	你的音调是(T1-T9)
+- QRJ 	我的信号小吗？ 	你的信号小
+- QRK 	我的信号可辨度是多少？ 	你的信号可辨度是(R1-R5)
+- QRL 	你忙吗？ 	我正忙
+- **QRM 	你受到他台干扰吗？ 	我正受到他台干扰 1.无 2.稍有 3.中等 4.严重 5.极端**
+- **QRN 	你受到天电干扰吗？ 	我正受到天电干扰 1.无 2.稍有 3.中等 4.严重 5.极端**
+- QRO 	要我增加发信功率吗？ 	请增加发信功率
+- QRP 	要我减低发信功率吗？ 	请减低发信功率
+- QRQ 	要我发得快些吗？ 	请发快些
+- QRS 	要我发得慢些吗？ 	请发慢些
+- QRT 	要我停止拍发吗？ 	请停止拍发
+- QRU 	你有事吗？ 	无事
+- QRV 	你准备好了吗？ 	我已准备好了
+- QRW 	需要我转告吗？ 	请转告
+- QRX 	要我等多长时间？ 	请等待... ...分钟
+- **QRZ 	谁在呼叫我？ 	...KHz/MHz正在呼叫你**
+- QSA 	我的信号强度是多少？ 	你的信号强度是...
+- QSB 	我的信号有衰落吗？ 	你的信号强度是，1.几乎不能抄收 2.弱 3.还好 4.好 5.很好
+- QSD 	我的信号不完整吗? 	你的信号不完整
+- **QSL 	你确认收妥／QSL卡片吗？ 	我确认收妥／QSL卡片**
+- QSO 	你能否和...直接（或转接）通信？ 	你能和...直接（或转接）通信？
+- QSP 	你能中转到...吗？ 	我能中转到...
+- QSU 	能在这个频率(或某个频率)回复吗？ 	我将在此频率(或某频率)回复
+- QSV 	有天电干扰要我在此频率发一串 V 字吗？ 	请在此频率发一串 V 字
+- QSW 	你将在此频率(或某频率)发吗？ 	我将在此频率(或某频率)发
+- QSX 	你将在某频率收听吗？ 	我将在某频率收听
+- QSY 	要我改用其他频率拍发吗？ 	请改用...KHz/MHz拍发
+- QSZ 	要我每组发两遍吗？ 	请每组发两遍
+- QTB 	要我查对组数吗？ 	请查对组数
+- QTC 	你有几份报要发？ 	我有...份报要发
+- **QTH 	你的地理位置是？ 	我的地理位置是...**
+- QTR 	你的标准时间是？ 	我的标准时间是... 
+
+[业余无线电常用缩略语](http://www.sara.org.cn/technology/detail9.htm)（加粗的为考试可能会考的，需重点记忆），根据题库又补充了很多 mark
+- 缩略语 	原语 	含义
+- AA 	ALL AFTER 	在后
+- LSN 	LISTEN 	收听
+- *AB 	ALL BEFORE 	在前
+- N 	NO 	不
+- *ABT 	ABOUT 	关于、大约
+- NA 	NORTH AMERICA 	北美洲
+- ADD 	ADDITION 	增加
+- NCS 	NET CONTROL STATION 	网络控制电台
+- ADR 	ADDRESS 	地址
+- ND 	NOTHING DOING 	无事
+- AF 	AFRICA 	非洲
+- NR 	NUMBER 	数目
+- AHR 	ANOTHER 	其他、另外
+- *NW 	NOW 	现在
+- AGN 	AGAIN 	再、再一次
+- OB 	OLD BOY 	老弟
+- AM 	AMPLITUDE MODULATION 	调幅
+- OC 	OLD CHAP,OCEANIA 	老伙计，大洋洲
+- ANS 	ANSWER 	回答
+- **OM 	OLD MAN 	老“火腿”**
+- **ANT 	ANTENNA 	天线**
+- OP 	OPERATOR 	操作员、报务员
+- AS 	ASIA 	亚洲
+- OSCAR 	ORBITING SATELLITE CARRYING AMATEUR RADIO 	业余卫星
+- BCI 	BROADCAST INTERFERENCE 	广播干扰
+- OT 	OLD TIME 	老前辈、老资格
+- BCNU 	BE SEEING YOU 	见到你
+- POBOX 	POST OFFICE BOX 	邮政信箱
+- BGN 	BEGIN 	开始
+- PSE 	PLEASE 	请
+- BUG 	SEMI-AUTOMATIC KEY 	半自动电键
+- PWR 	POWER 	功率
+- BURO 	BUREAU 	管理局
+- ***R 	ROGER、RECEIVED 	收到了**
+- CD 	CRD 	卡片
+- **RX、RCVR 	RECEIVER 	接收机**
+- *CFM 	CONFIRM 	确认、认为
+- RFI 	RADIO FREQUENCY INTERFERENCE 	无线电干扰
+- CLBK 	CALL BOOK 	呼号手册
+- **RIG 	STATION EQUPMENT 	电台设备** mark
+- CQ 	CALL ANY STATION 	普遍呼叫
+- RPRT 	REPORT 	报告
+- CRT 	CORRECTION 	改正
+- RTTY 	RADIO TELETYPE 	无线电传打字
+- *CUAGN 	SEE YOU AGAIN 	再见到你
+- SA 	SOUTH AMERICA 	南美洲
+- *CUL 	SEE YOU LATER 	再会
+- SK 	END 	结束符号
+- *CW 	CONTINUOUS WAVE 	等幅报
+- SKED 	SCKEDULE 	表格
+- CY 	COPY 	抄收
+- SN 	SOON 	立即、不久
+- *DE 	FROM 	从
+- SOS 	SAVE OUR SOULD 	呼救信号
+- ***DF 	DIRECTION FINDING 	测向**
+- **ARDF Amateur radio direction finding 业余无线电测向**
+- SRI 	SORRY 	抱歉
+- *DR 	DEAR 	亲爱的
+- SSB 	SINGLE SIDE BAND 	单边带
+- DX 	LONG DISTANCE 	远距离
+- SSTV 	SLOW-SCAN TELEVISION 	慢扫描电视
+- EL、ELE 	ANTENNA ELEMENT 	天线单元
+- STN 	STATION 	电台
+- ES 	AND 	和
+- SW 	SHORT WAVE、SWITCH 	短波、开关
+- EU 	EUROPE 	欧洲
+- SWL 	SHORT WAVE LISTENER 	短波收听台
+- FB 	FINE BUSINESS 	良好的
+- TEMP 	TEMPERATRE 	温度
+- FM 	FREQUENCY MODULATION 	调频
+- TMW 	TOMORROW 	明天
+- **FREQ、FQ 	FREQUENCY 	频率**
+- TNX、TKS 	THANKS 	谢谢
+- GA 	GOOD AFTERNOON、GO AHEAD 	下午好、往下发
+- T/R 	TRANSMIT/RECEIVE 	收发信
+- GB 	GOOD BYE 	再见
+- TU 	THANKS YOU 	谢谢你
+- GE 	GOOD EVENING 	晚上好
+- **TX、XMTR 	TRANSMITTER 	发射机**
+- GL 	GOOD LUCK 	好运
+- U 	YOU 	你
+- GLD 	GLAD 	高兴
+- UR 	YOUR，YOUR ARE 	你的、你是
+- GM 	GOOD MORNING 	早上好
+- UTC 	UNIVERSAL COORDINATED TIME 	世界协调时
+- GN 	GOOD NIGHT 	晚安
+- VFO 	VARIABLE FREQUENCY OSEILLATOR 	可变频率振荡器
+- HAM 	AMATEUR TRANSMITTER 	业余无线电爱好者
+- VY 	VERY 	很
+- HR 	HERE 	这里
+- WW 	WORLD WIDE 	全世界
+- HPE 	HOPE 	希望
+- **WX 	WEATHER 	天气**
+- HW 	HOW 	如何
+- **XCVR 	TRANSCEIVER 	收发信机**
+- IARU 	INTERNATIONAL AMATEUR RADIO UNIN 	国际业余无线电联盟
+- XMAS 	CHRISTMAS 	圣诞节
+- ITU 	INTERNATIONAL TELECOMMUNICATION UNIN 	国际电讯联盟
+- XTAL 	ORYSTAL 	晶体
+- K、KU 	GO AHEAD 	请回答
+- XYL 	WIFE 	妻子
+- KNW 	KNOW 	知道
+- YL 	YOUNG LADY 	小姐、女报务员
+- LG 	LONG 	长
+- YM 	YOUNGMAN 	青年人（男）
+- LIS 	LICENSE 	执照
+- **73 	BEST REGARDS 	祝愿，致意**
+- **LOG 	LOG BOOK 	电台日记**
+- **88 	LOVE AND KISSES 	爱与接吻**
+- **GND ground 地线，地面**
+
+注：带“*”的为普通通信常用缩语
+
+天线缩写（需要记忆）TODO mark
+- DP 偶极天线
+- GP 垂直接地天线
+- BEAM 定向天线
+- YAGI 八木天线
+- VER 垂直天线
+
+
+
 ## A.2.4 业余电台通信常用的地理常识
 
 # A.3.无线电系统原理
