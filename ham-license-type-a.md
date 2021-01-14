@@ -1,3 +1,4 @@
+#! https://zhuanlan.zhihu.com/p/344389487
 # 业余无线电（HAM）A类操作证考试教程
 
 本文GitHub地址是<https://github.com/jks-liu/zhihu/blob/master/ham-license-type-a.md>。
