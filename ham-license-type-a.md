@@ -322,7 +322,7 @@ A类业余无线电台允许发射的发射频率为**30-3000MHz**范围内的�
   * 在430MHz频段进行本地联络时应避免占用431.9-432.240MHz和435-438MHz
   * 435MHz至438MHz业余频段留给业余卫星通信使用，话音及其他通信方式不应占用
 
-431.9-432.240MHz频段，根据这份[India National Spectrum Plan (INSP) for Amateur Radio Service](https://s2p.studylib.net/store/data/018368280.pdf?k=EwAAAXj5DJetAAACWCQJih6PEtzwqYm4lMEeLkSsZGHi3L96cvhWJDh-jVH5)，也是用于EME通信。
+431.9-432.240MHz频段，根据这份[India National Spectrum Plan (INSP) for Amateur Radio Service](https://web.archive.org/web/20210427140500/https://s2p.studylib.net/store/data/018368280.pdf?k=EwAAAXkTo224AAACWCQJih6PEtzw7KzTCM07rqeGteJzEKPp9zsApEPf53ER)，也是用于EME通信。
 
 
 业余无线电台在业余业务、卫星业余业务作为次要业务使用的频率或者与其他主要业务共同使用的频率上发射操作时，应当**遵守无线电管理机构对该频率的使用规定**。**业余无线电台在无线电管理机构核准其使用的频段内，享有平等的频率使用权**。
