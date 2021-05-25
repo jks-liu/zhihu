@@ -26,7 +26,7 @@
 ```c++
 int add1(x)
 {
-    co_return x+1
+    co_return x+1;
 }
 ```
 
@@ -47,15 +47,15 @@ int add1(x)
 Promise对象的类型是编译器根据协程自动推导出来的。一种简单的情况如下：
 
 ```c++
-struct my_return_t{
-  struct promise_type {
-      // ......
-  };
+struct my_return_t {
+    struct promise_type {
+        // ......
+    };
 };
 
 my_return_t my_coro(x)
 {
-    co_yield 1
+    co_yield 1;
 }
 ```
 
@@ -72,7 +72,7 @@ struct my_return_t{
     awaitable initial_suspend();
     awaitable final_suspend() noexcept;
     void return_void();
-    awaitable return_value(some_type);
+    void return_value(some_type);
     awaitable yield_value(some_type);
     void unhandled_exception();
   };
@@ -134,22 +134,346 @@ auto x = co_await awaitable
 
 自此，`auto x = co_await awaitable`就算执行完毕。
 
-那如果`awaitable.await_ready()`返回`true`呢？那就更简单了，说明`c0_await`已经准备好了，直接执行`awaitable.await_resume()`并赋值给`x`，就不暂停了。
+### 协奏曲一
+
+那如果`awaitable.await_ready()`返回`true`呢？那就更简单了，说明`co_await`已经准备好了，直接执行`awaitable.await_resume()`并赋值给`x`，就不暂停了。
+
+### 协奏曲二
 
 **注意**：有时候`handle.resume()`在`awaitable.await_suspend(handle)`返回前就被执行了，比如你在`await_suspend`中开了一个线程来执行`resume()`。如果你有类似的操作，那你就要注意。这意味着有一定的可能性`auto x = co_await awaitable`已经（在另一个上下文中）执行完毕，而你的`await_suspend`还没有返回，此时，`awaitable`临时对象可能已经被销毁，那么`awaitable.await_suspend`就不能安全地访问`this`指针。这条注意要多看几遍，可能你第一次看的时候会觉得看不懂，只要你看懂了，你的协程知识就算入门了。
 
+### 协奏曲三：两个常用的Awaitable对象
+
+- 一个是[`std::suspend_always`](https://en.cppreference.com/w/cpp/coroutine/suspend_always)，它的`await_ready`总是返回`false`，另外两个函数都是空的。
+- 一个是[`std::suspend_never`](https://en.cppreference.com/w/cpp/coroutine/suspend_never)，它的`await_ready`总是返回`true`，另外两个函数也都是空的。
+
+这两个类型人如其名。
+
 ## 协程的执行
 
-了解了上面的Promise和Awaitable之后，就可以一探协程的执行了。
+有了上面的基础之后，我们就可以一探协程的执行了。
 
 ```c++
 my_return_t my_coro()
 {
-    co_await my_awaitable_t()
+    co_await my_awaitable_t();
 }
 ```
 
-下面我只列出`my_coro`执行的关键步骤
- - 以类型`my_return_t::promise_type`构造`promise`对象
- - 由于我们的协程返回一个`my_return_t`的对象，所以调用`promise.get_return_object`生成一个。
- - 执行`co_await promise.initial_suspend()`
+协程`my_coro`执行步骤如下（关键步骤）：
+
+- 以类型`my_return_t::promise_type`构造`promise`对象
+- 由于我们的协程返回一个`my_return_t`的对象，所以调用`promise.get_return_object`生成一个。这个对象很重要，协程靠它和调用者/回复者传递信息。每当协程让出控制权返回时，它将作为返回值被返回。
+- 执行`co_await promise.initial_suspend()`。通常`initial_suspend`会返回`suspend_always`或`suspend_never`。注意，这里我们还没有开始执行协程的函数体，就已经（可能）有控制权的转移了。
+- 执行协程的函数体
+    * 普通语句照常执行
+    * `co_await`：如上所述
+    * `co_yield expr`：等价于`co_await promise.yield_value(expr)`
+    * `co_return`：调用`promise.return_void()`或`promise.return_value(expr)`
+        - 调用`promise.return_void()`的情况
+            * 执行空的`co_return;`
+            * 执行`co_return expr;`，但`expr`的类型是`void`
+            * 到达函数结尾，执行了一个隐含的空`co_return;`
+        - 调用`promise.return_value(expr)`的情况
+            * 执行`co_return expr;`，且`expr`的类型不是`void`
+- 销毁所有协程的自动变量
+- 执行`co_await promise.final_suspend()`
+- 销毁`promise`
+- 返回调用之/恢复者
+
+## 协奏曲四：协程例
+
+这里用协程实现了`range`操作，并添加了`for`循环的支持。
+
+```c++
+#include <coroutine>
+#include <iostream>
+#include <stdexcept>
+#include <thread>
+
+struct range_t
+{
+    struct promise_type;
+    struct awaitable
+    {
+        bool await_ready()
+        { 
+            std::cout << __func__ << std::endl;
+            return false; 
+        }
+        void await_suspend(std::coroutine_handle<> h)
+        {
+            std::cout << __func__ << std::endl;
+            m_promise->m_h = h;
+        }
+        void await_resume() 
+        {
+            std::cout << __func__ << std::endl;
+        }
+        
+        promise_type *m_promise;
+    };
+
+    struct promise_type
+    {
+        range_t get_return_object() { 
+            std::cout << __func__ << std::endl;
+            return {this}; 
+        }
+        std::suspend_never initial_suspend() 
+        { 
+            std::cout << __func__ << std::endl;
+            return {}; 
+        }
+        std::suspend_always final_suspend() noexcept         
+        { 
+            std::cout << __func__ << std::endl;
+            return {}; 
+        }
+        void return_void()      
+        { 
+            std::cout << __func__ << std::endl;
+            m_end_flag = true;
+        }
+        awaitable yield_value(int x)
+        {
+            std::cout << __func__ << std::endl;
+            m_x = x;
+            return awaitable(this);
+        }
+        void unhandled_exception()     
+        { 
+            std::cout << __func__ << std::endl;
+        }
+
+        bool m_end_flag = false;
+        int m_x = -1;
+        std::coroutine_handle<> m_h;
+
+        promise_type() {
+            std::cout << __func__ << std::endl;
+        }
+    };
+
+
+    struct iter
+    {
+        range_t *r;
+
+        bool operator!=(const nullptr_t &_)
+        {
+            return !r->m_promise->m_end_flag;
+        }
+
+        iter& operator++()
+        {
+            r->m_promise->m_h();
+            return *this;
+        }
+
+        int& operator*()
+        {
+            return r->m_promise->m_x;
+        }
+    };
+
+    iter begin()
+    {
+        return iter(this);
+    }
+
+    nullptr_t end()
+    {
+        return nullptr;
+    }
+
+    promise_type *m_promise;
+};
+
+range_t range(int stop)
+{
+    std::cout << __func__ << " enter" << std::endl;
+    for (int i=0; i<stop; ++i) {
+        std::cout << "\n++before co_yield" << std::endl;
+        co_yield i;
+        std::cout << "--after co_yield" << std::endl;
+    }
+    std::cout << __func__ << " exit" << std::endl;
+}
+
+int main()
+{
+    for (auto& i : range(5))
+        std::cout << "* Range of " << i << std::endl;
+}
+```
+
+运行结果如下
+
+```bash
+$ g++ --version
+g++ (Ubuntu 11.1.0-1ubuntu1~20.04) 11.1.0
+Copyright (C) 2021 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+$ g++ -std=c++20 -pthread coro.cpp -o coro
+$ ./coro
+promise_type
+get_return_object
+initial_suspend
+range enter
+
+++before co_yield
+yield_value
+await_ready
+await_suspend
+* Range of 0
+await_resume
+--after co_yield
+
+++before co_yield
+yield_value
+await_ready
+await_suspend
+* Range of 1
+await_resume
+--after co_yield
+
+++before co_yield
+yield_value
+await_ready
+await_suspend
+* Range of 2
+await_resume
+--after co_yield
+
+++before co_yield
+yield_value
+await_ready
+await_suspend
+* Range of 3
+await_resume
+--after co_yield
+
+++before co_yield
+yield_value
+await_ready
+await_suspend
+* Range of 4
+await_resume
+--after co_yield
+range exit
+return_void
+final_suspend
+```
+
+为方便读者更好地把握执行顺序，我给所有的协程相关的函数都打了log。
+
+有几个注意点
+
+- 需要给promise一个默认的构造函数
+- 用了`this`指针在结构体见传递状态
+- 注意`initial_suspend`和`final_suspend`有不同的返回值，想想是为什么
+- 请读者找一下，`resume`是在哪里调用的
+
+# 线程池
+
+![线程池（绿）及待完成的任务（蓝）和已完成的任务（黄）](pics/1024px-Thread_pool.svg.png)
+
+图片作者是[Cburnett](https://commons.wikimedia.org/wiki/User:Cburnett)，在[Creative Commons Attribution-Share Alike 3.0 Unported](https://creativecommons.org/licenses/by-sa/3.0/deed.en) license下授权。
+
+从上图可以看到线程池需要一个Queue，用来存放待完成的任务，并且是一个线程安全的Queue。（我们忽略已完成的任务）。
+
+我们希望像下面这样操作线程池。
+
+```c++
+// 创建一个有n个线程的线程池
+auto h = thread_pool_t(n);
+
+// 提交一个任务
+h.submit(task);
+
+// 停止这个线程池
+h.stop();
+```
+
+那么线程池和协程有什么关系呢，那就是在queue中保存的是协程，更准确地说，queue中保存地是前一章提到的协程handle。
+
+下面我们就从线程安全的Queue和线程池这两点着手。
+
+## 线程安全的Queue
+
+这个简单，我们将标准库中的`std::queue`包装一下就行。
+
+```c++
+#include <atomic>
+#include <condition_variable>
+#include <mutex>
+#include <optional>
+#include <queue>
+
+template <typename T>
+struct threadsafe_queue_t
+{
+    threadsafe_queue_t() {}
+
+    void put(T task)
+    {
+        std::unique_lock<std::mutex> lk(m_m);
+        m_queue.emplace(task);
+        m_cv.notify_one();
+    }
+
+    std::optional<T> get()
+    {
+        std::unique_lock<std::mutex> lk(m_m);
+        m_cv.wait(lk, [q = this] { return q->m_must_return_nullptr.test() || !q->m_queue.empty(); });
+
+        if (m_must_return_nullptr.test())
+            return nullptr;
+
+        T ret = m_queue.front();
+        m_queue.pop();
+
+        return ret;
+    }
+
+    void destroy()
+    {
+        m_must_return_nullptr.test_and_set();
+        m_cv.notify_all();
+    }
+
+private:
+    std::queue<T> m_queue;
+    std::mutex m_m;
+    std::condition_variable m_cv;
+
+    std::atomic_flag m_must_return_nullptr;
+};
+```
+
+注意以下几点：
+- 函数`get`在queue中没有数据的时候会一直阻塞，知道有数据到来。
+- 实现的一个`destroy`函数，目的是在停止线程池的时候有办法将阻塞在`get`中的任务唤醒，从而返回。
+
+## Thread pool
+
+
+
+ # FAQ
+
+ 你可以在[cppreference.Coroutines (C++20)](https://en.cppreference.com/w/cpp/language/coroutines)查看所有的细节
+
+ - 问：promise一定要默认构造函数吗
+ - 答：不一定，参见cppreference
+
+ - 问：`await_suspend`除了返回`void`类型还能返回什么类型
+ - 答：`bool`
+
+ - 问：异常是怎么处理的
+ - 答：如果你已经懂了上面介绍的协程的知识，相信你很容易就可以自己在cppreference上学会你想要的。加油！
+
+ - 问：协程被销毁是怎样的流程
+ - 答：RTFM
+
