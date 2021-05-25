@@ -95,16 +95,48 @@ struct my_awaitable_t {
 
 注意上面的函数可能会有不同的返回值类型，我们先忽略这个问题。
 
+本文又是也将Awaitable对象称为awaiter，大家自行联系上下文。
+
+## 协程handle
+
+我们注意到上一节的`await_suspend`函数，其参数是`std::coroutine_handle<> h`，这便是协程handle了。如上所说，通过它可以实现两个重要的操作：恢复/销毁一个协程。
+
+```c++
+h.resume();
+h.destroy();
+h(); // 等同于h.resume();
+```
+
 ## `co_await`
 
-有了上面的讲解，我们到了协程的核心部分，`co_await`操作符。它的作用是**暂停当前协程，并将控制权交给调用者（Caller）**。
+有了上面的讲解，我们到了协程的核心部分，`co_await`操作符。它的作用是**暂停当前协程，并将控制权交给调用者（Caller）或恢复者（Resumer）**。
 
-语法：
-`co_await expr`
+语法：`co_await expr`
 
-第一步，`expr`会通过某种规则转换为awaitable对象，或者简单一点说，`co_await`后接一个awaitable对象。
+第一步，`expr`会通过某种规则转换为awaitable对象，或者简单一点说，`co_await`后接一个awaitable对象：`co_await awaitable`。
 
-`co_await awaitable`
+我们知道Awaitable对象包含三个函数，我们正式通过这三个函数来控制协程的交互。
+
+我们以下面这个例子介绍`co_await`如何执行
+
+```c++
+auto x = co_await awaitable
+```
+
+- 执行`awaitable.await_ready()`，这个函数通常返回`false`，表示`co_await`还没有准备好计算一个值给`x`，所以协程会暂停并准备准备交出控制权；
+- 在交出控制权之前会执行`awaitable.await_suspend(handle)`，这个函数会将协程handle保存在某个地方，以便后续的恢复或销毁。简便起见，`await_suspend`函数返回`void`（对其它返回值感兴趣的亲们可以参考[这里](https://zh.cppreference.com/w/cpp/language/coroutines)）
+- 返回控制权给调用者或回复者
+
+~~然后~~，如果在其它地方有人调用了`handle.resume()`，那么这个协程就又被恢复了，被恢复的协程立刻执行以下操作：
+
+- 执行`awaitable.await_resume()`
+- 将`await_resume()`的返回值赋值给`x`
+
+自此，`auto x = co_await awaitable`就算执行完毕。
+
+那如果`awaitable.await_ready()`返回`true`呢？那就更简单了，说明`c0_await`已经准备好了，直接执行`awaitable.await_resume()`并赋值给`x`，就不暂停了。
+
+**注意**：有时候`handle.resume()`在`awaitable.await_suspend(handle)`返回前就被执行了，比如你在`await_suspend`中开了一个线程来执行`resume()`。如果你有类似的操作，那你就要注意。这意味着有一定的可能性`auto x = co_await awaitable`已经（在另一个上下文中）执行完毕，而你的`await_suspend`还没有返回，此时，`awaitable`临时对象可能已经被销毁，那么`awaitable.await_suspend`就不能安全地访问`this`指针。这条注意要多看几遍，可能你第一次看的时候会觉得看不懂，只要你看懂了，你的协程知识就算入门了。
 
 ## 协程的执行
 
