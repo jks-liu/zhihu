@@ -11,7 +11,7 @@
 
 ## 协程定义
 
-> 一个事物没有定义，那便失去了灵魂。
+> 一个事物没有定义，那便失去了灵魂。  
 > .....................................................—— 鲁迅
 
 协程是一个**函数**，是一个可以暂停（**suspend**）和恢复（**resume**）的函数。
@@ -36,7 +36,7 @@ int add1(x)
 协程总是和下面三个东东相关联：
 
 - Promise对象：用于返回结果，或异常，需要我们自己定义
-- 协程handle：[`std::coroutine_handle`](https://en.cppreference.com/w/cpp/coroutine/coroutine_handle)，我们通过这个handle来**resume**或**destroy**这个协程
+- 协程handle：[`std::coroutine_handle`](https://en.cppreference.com/w/cpp/coroutine/coroutine_handle)，我们通过这个handle来**resume**或**destroy**这个协程。此外，我们还能通过它访问Promise对象。
 - 协程状态：我们把它交给编译器，暂时无需考虑
 
 另外还有一个很重要的概念是`Awaitable`对象。
@@ -64,7 +64,7 @@ my_return_t my_coro(x)
 
 当然上面只是一种常用的情形，更复杂的比如上面的`int add1(x)`协程，根本不存在`int::promise_type`。这个这里暂时就不介绍了，喜欢刨根问底的亲们可以参考[`std::coroutine_traits`](https://en.cppreference.com/w/cpp/coroutine/coroutine_traits)。
 
-更进一步，`promise_type`需要定义如下函数：
+更进一步，`promise_type`的如下函数有约定的意义，具体如何实现下面的函数后面会讲到：
 
 ```c++
 struct my_return_t{
@@ -80,11 +80,11 @@ struct my_return_t{
 };
 ```
 
-注意`return_void`和`return_value`不会同时存在。关于awaitable见下一小节，其余函数的意义，后面再讲解。
+注意`return_void`和`return_value`不会同时存在。关于awaitable见下一小节，其余函数的意义。
 
 ## Awaitable对象
 
-可以Awaitable理解成一个类，名字不重要，但必须定义了以下三个函数：
+可以将Awaitable理解成一个类，名字不重要，但必须定义以下三个函数：
 
 ```c++
 struct my_awaitable_t {
@@ -96,44 +96,50 @@ struct my_awaitable_t {
 
 注意上面的函数可能会有不同的返回值类型，我们先忽略这个问题。
 
-本文又是也将Awaitable对象称为awaiter，大家自行联系上下文。
+本文有时也将Awaitable对象称为awaiter，大家自行在脑子里互换。
 
 ## 协程handle
 
-我们注意到上一节的`await_suspend`函数，其参数是`std::coroutine_handle<> h`，这便是协程handle了。如上所说，通过它可以实现两个重要的操作：恢复/销毁一个协程。
+我们注意到上一节的`await_suspend`函数，其参数是`std::coroutine_handle<> h`，这便是协程handle了。如上所说，通过它可以实现两个重要的操作：恢复/销毁一个协程。以及访问Promise对象。
 
 ```c++
 h.resume();
 h.destroy();
 h(); // 等同于h.resume();
+
+// 注意如果用这个函数，h的类型不能是特化的`std::coroutine_handle<>`
+// 必须形如`std::coroutine_handle<Promise>`，后面有例子
+h.promise();
 ```
+
+我们可以通过handle访问Promise对象，反之，有了Promise对象，我们也可以通过[`std::coroutine_handle<Promise>::from_promise`](https://en.cppreference.com/w/cpp/coroutine/coroutine_handle/from_promise)获得handle。即**handle和Promise对象，我们有了其中一个，就可以获得另外一个**。
 
 ## `co_await`
 
-有了上面的讲解，我们到了协程的核心部分，`co_await`操作符。它的作用是**暂停当前协程，并将控制权交给调用者（Caller）或恢复者（Resumer）**。
+有了上面的讲解，我们就到了协程的核心部分，`co_await`操作符。它的作用是**暂停当前协程，并将控制权交给调用者（Caller）或恢复者（Resumer）**。
 
 语法：`co_await expr`
 
 第一步，`expr`会通过某种规则转换为awaitable对象，或者简单一点说，`co_await`后接一个awaitable对象：`co_await awaitable`。
 
-我们知道Awaitable对象包含三个函数，我们正式通过这三个函数来控制协程的交互。
+我们知道Awaitable对象包含三个函数，我们正是通过这三个函数来控制协程的交互。
 
 我们以下面这个例子介绍`co_await`如何执行
 
 ```c++
-auto x = co_await awaitable
+auto x = co_await awaitable;
 ```
 
-- 执行`awaitable.await_ready()`，这个函数通常返回`false`，表示`co_await`还没有准备好计算一个值给`x`，所以协程会暂停并准备准备交出控制权；
-- 在交出控制权之前会执行`awaitable.await_suspend(handle)`，这个函数会将协程handle保存在某个地方，以便后续的恢复或销毁。简便起见，`await_suspend`函数返回`void`（对其它返回值感兴趣的亲们可以参考[这里](https://zh.cppreference.com/w/cpp/language/coroutines)）
-- 返回控制权给调用者或回复者
+- 执行`awaitable.await_ready()`，这个函数通常返回`false`，表示`co_await`还没有准备好计算一个值给`x`，所以协程会暂停并准备交出控制权；
+- 在交出控制权之前会执行`awaitable.await_suspend(handle)`，这个函数一般会将协程handle保存在某个地方，以便后续的恢复或销毁。简便起见，`await_suspend`函数返回`void`（对其它返回值感兴趣的亲们可以参考[这里](https://zh.cppreference.com/w/cpp/language/coroutines)）
+- 移交控制权给调用者或恢复者。从调用者或恢复者的角度来看，就是协程返回了。
 
 ~~然后~~，如果在其它地方有人调用了`handle.resume()`，那么这个协程就又被恢复了，被恢复的协程立刻执行以下操作：
 
 - 执行`awaitable.await_resume()`
 - 将`await_resume()`的返回值赋值给`x`
 
-自此，`auto x = co_await awaitable`就算执行完毕。
+自此，`auto x = co_await awaitable;`就算执行完毕了。
 
 ### 协奏曲一
 
@@ -141,7 +147,7 @@ auto x = co_await awaitable
 
 ### 协奏曲二
 
-**注意**：有时候`handle.resume()`在`awaitable.await_suspend(handle)`返回前就被执行了，比如你在`await_suspend`中开了一个线程来执行`resume()`。如果你有类似的操作，那你就要注意。这意味着有一定的可能性`auto x = co_await awaitable`已经（在另一个上下文中）执行完毕，而你的`await_suspend`还没有返回，此时，`awaitable`临时对象可能已经被销毁，那么`awaitable.await_suspend`就不能安全地访问`this`指针。这条注意要多看几遍，可能你第一次看的时候会觉得看不懂，只要你看懂了，你的协程知识就算入门了。
+**注意**：有时候`handle.resume()`在`awaitable.await_suspend(handle)`返回前就被执行了，比如你在`await_suspend`中开了一个线程来执行`resume()`。如果你有类似的操作，那你就要注意。这意味着有一定的可能性`auto x = co_await awaitable;`已经（在另一个上下文中）执行完毕，而你的`await_suspend`还没有返回，此时，`awaitable`临时对象可能已经被销毁，那么`awaitable.await_suspend`就不能安全地访问`this`指针。这条注意要多看几遍，可能你第一次看的时候会觉得看不懂，只要你看懂了，你的协程知识就算入门了。
 
 ### 协奏曲三：两个常用的Awaitable对象
 
@@ -164,7 +170,7 @@ my_return_t my_coro()
 协程`my_coro`执行步骤如下（关键步骤）：
 
 - 以类型`my_return_t::promise_type`构造`promise`对象
-- 由于我们的协程返回一个`my_return_t`的对象，所以调用`promise.get_return_object`生成一个。这个对象很重要，协程靠它和调用者/回复者传递信息。每当协程让出控制权返回时，它将作为返回值被返回。
+- 由于我们的协程返回一个`my_return_t`类型的对象，所以调用`promise.get_return_object`生成一个。这个对象很重要，协程靠它和调用者/恢复者传递信息。每当协程让出控制权时，它将作为返回值被返回。
 - 执行`co_await promise.initial_suspend()`。通常`initial_suspend`会返回`suspend_always`或`suspend_never`。注意，这里我们还没有开始执行协程的函数体，就已经（可能）有控制权的转移了。
 - 执行协程的函数体
     * 普通语句照常执行
@@ -180,7 +186,7 @@ my_return_t my_coro()
 - 销毁所有协程的自动变量
 - 执行`co_await promise.final_suspend()`
 - 销毁`promise`
-- 返回调用之/恢复者
+- 返回调用者/恢复者
 
 ## 协奏曲四：协程例
 
@@ -205,14 +211,11 @@ struct range_t
         void await_suspend(std::coroutine_handle<> h)
         {
             std::cout << __func__ << std::endl;
-            m_promise->m_h = h;
         }
         void await_resume() 
         {
             std::cout << __func__ << std::endl;
         }
-        
-        promise_type *m_promise;
     };
 
     struct promise_type
@@ -240,7 +243,7 @@ struct range_t
         {
             std::cout << __func__ << std::endl;
             m_x = x;
-            return awaitable(this);
+            return awaitable();
         }
         void unhandled_exception()     
         { 
@@ -249,7 +252,6 @@ struct range_t
 
         bool m_end_flag = false;
         int m_x = -1;
-        std::coroutine_handle<> m_h;
 
         promise_type() {
             std::cout << __func__ << std::endl;
@@ -268,7 +270,7 @@ struct range_t
 
         iter& operator++()
         {
-            r->m_promise->m_h();
+            std::coroutine_handle<promise_type>::from_promise(*r->m_promise)();
             return *this;
         }
 
@@ -304,7 +306,7 @@ range_t range(int stop)
 
 int main()
 {
-    for (auto& i : range(5))
+    for (auto& i : range(3))
         std::cout << "* Range of " << i << std::endl;
 }
 ```
@@ -347,22 +349,6 @@ await_suspend
 * Range of 2
 await_resume
 --after co_yield
-
-++before co_yield
-yield_value
-await_ready
-await_suspend
-* Range of 3
-await_resume
---after co_yield
-
-++before co_yield
-yield_value
-await_ready
-await_suspend
-* Range of 4
-await_resume
---after co_yield
 range exit
 return_void
 final_suspend
@@ -372,12 +358,18 @@ final_suspend
 
 有几个注意点
 
-- 需要给promise一个默认的构造函数
+- 需要给promise一个构造函数
 - 用了`this`指针在结构体见传递状态
 - 注意`initial_suspend`和`final_suspend`有不同的返回值，想想是为什么
 - 请读者找一下，`resume`是在哪里调用的
 
-# 线程池
+眼尖的同学可能已经发现了，上面例子用到的`awaitable`其实就是就是`std::suspend_always`。我们这里写出来只是为了让大家一窥协程的执行过程。
+
+练习：将`awaitable`改为`std::suspend_always`并编译运行。结果应该是除了少了几行log外，没什么不同。
+
+对`for`循环感兴趣的读者可以参考[Range-based for loop](https://en.cppreference.com/w/cpp/language/range-for)。
+
+# 二、线程池
 
 ![线程池（绿）及待完成的任务（蓝）和已完成的任务（黄）](pics/1024px-Thread_pool.svg.png)
 
@@ -571,12 +563,12 @@ $ ./threadpool
 * Task 5
 ```
 
-注意`main`里的例子7个任务只执行了6个，请亲们思考是为什么。
+注意`main`里的例子7个任务只执行了6个，请亲们思考是为什么。这个例子和第一章的例子还有一个不同点是，这次的协程是一个类的成员函数。
 
 习题：`jthread`和`thread`有什么不同，留给读者作为习题吧。
 
 
- # FAQ
+ # 三、FAQ
 
  你可以在[cppreference.Coroutines (C++20)](https://en.cppreference.com/w/cpp/language/coroutines)查看所有的细节
 
