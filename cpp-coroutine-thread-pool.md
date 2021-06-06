@@ -7,6 +7,8 @@
 
 本文分为两个部分：第一部分是协程的简明教程，第二部分是使用协程实现一个thread pool。已经熟悉协程的朋友可以跳过第一部分。
 
+当然，这仅仅是一个教程，我还实现了一个功能完整的支持协程的线程池，有兴趣的同学可以参考[coroutine-thread-pool.h](https://github.com/jks-liu/coroutine-thread-pool.h)
+
 # 一、C++20协程
 
 ## 协程定义
@@ -567,20 +569,29 @@ $ ./threadpool
 
 习题：`jthread`和`thread`有什么不同，留给读者作为习题吧。
 
+## Next
 
- # 三、FAQ
+当然，上面这个仅仅是个例子，代码也不是很规范，类里面很多必要的函数没有定义。并且这个例子里的功能还不是很完善，比如以下功能：
 
- 你可以在[cppreference.Coroutines (C++20)](https://en.cppreference.com/w/cpp/language/coroutines)查看所有的细节
+- 支持单例模式
+- 支持获取任务的结果
+- 支持协程任务
 
- - 问：promise一定要默认构造函数吗
- - 答：不一定，参见cppreference
+对这些感兴趣的朋友可以参考开头的[coroutine-thread-pool.h](https://github.com/jks-liu/coroutine-thread-pool.h)库。
 
- - 问：`await_suspend`除了返回`void`类型还能返回什么类型
- - 答：`bool`
+# 三、FAQ
 
- - 问：异常是怎么处理的
- - 答：如果你已经懂了上面介绍的协程的知识，相信你很容易就可以自己在cppreference上学会你想要的。加油！
+你可以在[cppreference.Coroutines (C++20)](https://en.cppreference.com/w/cpp/language/coroutines)查看所有的细节
 
- - 问：协程被销毁是怎样的流程
- - 答：RTFM
+- 问：promise一定要默认构造函数吗
+- 答：不一定，参见cppreference
+
+- 问：`await_suspend`除了返回`void`类型还能返回什么类型
+- 答：`bool`
+
+- 问：异常是怎么处理的
+- 答：如果你已经懂了上面介绍的协程的知识，相信你很容易就可以自己在cppreference上学会你想要的。加油！
+
+- 问：协程被销毁是怎样的流程
+- 答：RTFM
 
