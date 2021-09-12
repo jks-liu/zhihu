@@ -10,11 +10,11 @@ WPL/s 是一个在 VS Code 中发布知乎文章/回答的插件。在 VS Code �
 
 | Markdown基础功能 | 支持与否 |
 | :--- | :--- |
-| 标题 | :heavy_check_mark: *1 |
+| 章节标题 | :heavy_check_mark: *1 |
 | 分割线 | :heavy_check_mark: |
 | 引用 | :heavy_check_mark: |
-| 链接 | :heavy_check_mark: |
-| 图片 | :heavy_check_mark: |
+| 链接 | :heavy_check_mark: *8 |
+| 图片 | :heavy_check_mark: *6 |
 | 表格 | :heavy_check_mark: *2 |
 | 公式 | :heavy_check_mark: |
 | 代码块 | :heavy_check_mark: |
@@ -36,10 +36,11 @@ WPL/s 是一个在 VS Code 中发布知乎文章/回答的插件。在 VS Code �
 
 | 知乎特色功能 | 支持与否 |
 | --- | --- |
+| 标题 | :heavy_check_mark: *7 |
 | 回答问题 | :heavy_check_mark: |
 | 发布文章 | :heavy_check_mark: |
-| 题图 | :heavy_check_mark: |
-| 链接卡片 | :x: *0 |
+| 题图 | :heavy_check_mark: *7 |
+| 链接卡片 | :heavy_check_mark: *4 |
 | 视频 | :x: |
 | 好物推荐 | :x: |
 | 附件 | :x: |
@@ -50,11 +51,15 @@ WPL/s 是一个在 VS Code 中发布知乎文章/回答的插件。在 VS Code �
 
 （0）打算近期支持，star，点赞，收藏，一键三连给我动力呀
 
-1. 最多可支持4级标题
+1. 最多可支持 4 级标题
 2. 表格暂时不支持对齐
-3. 知乎本身不支持，请大家踊跃向[知乎小管家](https://www.zhihu.com/people/zhihuadmin)提意见
+3. 知乎本身不支持，请大家踊跃向[知乎小管家](https://www.zhihu.com/people/zhihuadmin)提建议
 4. 格式见下一小节
 5. 支持大部分Emoji（很多emoji刚发的时候可以看到，但一段时间过后就会被知乎过滤掉），具体列表请查看上面的链接。
+6. - 同时支持本地图片和网络链接（暂时不支持 SVG 格式）
+7. 在元数据中指定
+8. 不支持为图片设置连接
+
 
 # 部分格式提醒
 
@@ -71,6 +76,12 @@ zhihu-title-image: 请输入专栏文章题图（若无需题图，删除本行�
 ---
 ```
 
+## 链接卡片
+```
+[![zhihu-link-card:本项目 GitHub 主页](./pics/vs-code-extension-search-zhihu.png)](https://github.com/jks-liu/WPL-s)
+```
+语法上和一个图片链接一样，但图片的文字需要以`zhihu-link-card:`开头。
+
 ## 参考文献
 ```md
    用[^n]来引用。
@@ -86,6 +97,10 @@ zhihu-title-image: 请输入专栏文章题图（若无需题图，删除本行�
 
 ## 测试01：题图
 如支持，应该可以在标题上面看到清明上河图。
+
+## 链接卡片
+
+[![zhihu-link-card:本项目 GitHub 主页](./pics/vs-code-extension-search-zhihu.png)](https://github.com/jks-liu/WPL-s)
 
 
 # Markdown功能测试
@@ -105,10 +120,21 @@ zhihu-title-image: 请输入专栏文章题图（若无需题图，删除本行�
 > 引用
 
 ## 测试04：链接
-[链接](http://www.baidu.com)
+[本项目 GitHub 链接](https://github.com/jks-liu/WPL-s)
+
+### 图片链接
+[![本项目 GitHub 主页](./pics/vs-code-extension-search-zhihu.png)](https://github.com/jks-liu/WPL-s)
+
+### [标题链接](https://github.com/jks-liu/WPL-s)
 
 ## 测试05：图片
-![图片](pics/Along-the-River-During-the-Qingming-Festival.jpg)
+SVG 格式暂不支持
+
+![本地 JPG 图片](pics/Along-the-River-During-the-Qingming-Festival.jpg)
+`![本地 SVG 图片](pics/emission9.svg)`
+![网络 PNG 图片](https://raw.githubusercontent.com/jks-liu/WPL-s/master/res/media/vs-code-extension-search-zhihu.png)
+`![网络 SVG 图片](https://www.w3school.com.cn/svg/circle1.svg)`
+
 
 ## 测试06：表格
 | 左对齐 | 居中 | 右对齐 |
