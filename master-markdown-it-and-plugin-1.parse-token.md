@@ -1,12 +1,14 @@
-#! https://zhuanlan.zhihu.com/p/400036665
-# markdown-it源码分析及插件编写：parse和token（1/3）
+---
+title: markdown-it源码分析及插件编写：parse和token（1/3）
+zhihu-url: https://zhuanlan.zhihu.com/p/400036665
+zhihu-title-image: pics/wpls-introduction.png
+---
 
 [markdown-it](https://github.com/markdown-it/markdown-it)可能是最流行的 JavaScript Markdown 库，它的使用很简单，并支持插件。
 
 但由于它的文档很是晦涩，想写一个插件也不知从何下手。所以这里只能使用最笨办法，读源代码。下面的内容希望能给编写插件的你带来一些启发。
 
 # 使用 markdown-it
-
 
 在解释源码之前，先来看一下 markdown-it 的用法。这样，你就会对 markdown-it 有一个大体的了解。
 
@@ -173,6 +175,7 @@ parse调用是我们的重点。分为两步
 所以最主要的两个规则就是`block`规则和`inline`规则。
 
 ## `block`规则
+注意这个规则定义在`rules_core/block`中，它会调用`parser_block`。
 
 ### 1. block规则首先会初始化自己的State
 注意parser_core, parser_inline, parser_block的State是不同的
@@ -196,7 +199,7 @@ tokenize会调用各个block规则（规则列表在`lib/parser_block.js`中）�
 - 更新state.line为匹配block的最后一行的后一行
 - 往state push一个新token，并修改
   * content为整个block的内容
-  * map为[开始行， 结束行下一行]
+  * map为[开始行， 结束行下一行]，遵循惯例是一个左闭右开区间
 
 当block规则匹配完成后，我们可以确保所有的行都被包含在token之内，因为有paragraph规则托底。
 
@@ -207,6 +210,19 @@ tokenize会调用各个block规则（规则列表在`lib/parser_block.js`中）�
 
 整体而言，inline的parse和block差不多，都是先new一个state，再tokenize。但inline多了一个post process的过程，即应用ruler2。
 
+Inline 规则也有一个类似 block 的托底规则（`lib\rules_inline\state_inline.js`）,当向 state 中push 新的 token 时，会将当前未处理的（pending）的字符串作为文本（`text`）类型先push到 token 中。
+```js
+// Push new token to "stream".
+// If pending text exists - flush it as text token
+//
+StateInline.prototype.push = function (type, tag, nesting) {
+  if (this.pending) {
+    this.pushPending();
+  }
+  ...
+}
+```
+
 ### 1. 初始化state
 
 - src：当前token的content
@@ -214,7 +230,61 @@ tokenize会调用各个block规则（规则列表在`lib/parser_block.js`中）�
 - posMax：src的长度
 
 ### 2. this.tokenize(state);
-这个和block的流程几乎是一样的。
+这个和block的流程几乎是一样的。下面讲几个重点的规则：
+
+#### Inline rule：text
+第一个规则叫 **text**。text 规则的主要目的是为了加快 parse 的速度。还记得上面我们说过，block 的规则是一行一行匹配的，照此类推，inline 就是一个字符一个字符地匹配。但显然这样做的话会对速度有明显的影响。所以，这个规则的作用就是跳过普通字符，停留在特殊字符，然后在特殊字符的位置匹配其它规则，这也是这个规则排在第一个的原因。
+
+这些特殊字符包括：
+```md
+!, ", #, $, %, &, ', (, ), *, +, ,, -, ., /, :, ;, <, =, >, ?, @, [, \, ], ^, _, `, {, |, }, or ~
+```
+
+其中，`{}$%@~+=:` 虽然没有被标准的 markdown 语法（[CommonMark](https://commonmark.org/)）用到，但它们也被当做特殊字符，以方便插件的开发。同样由于速度的原因，目前没有开放插件删减特殊字符的功能。
+
+#### Inline rule：newline
+这个规则就和他的名字一样，用于处理换行。这个规则很简单，就留给读者作为习题了。
+
+#### Inline rule：escape
+注意这个转义规则指的的Markdown自己的转义，和HTML的转义没有关系。
+
+当反斜杠遇到下面字符时会转义：```\!"#$%&\'()*+,./:;<=>?@[]^_`{|}~-```。
+
+反斜杠的另一个作用和换行有关。如果反斜杠后面紧跟一个换行符，会促发一个`'hardbreak'`。
+
+其它字符前的反斜杠会原样输出。
+
+知道了上面的标准，这个规则也就很简单了。
+
+#### Inline rule：backticks
+一般用作行内的代码`` `int a;` ``。由于这个规则没有嵌套其它规则，也没有转义，所以比较简单。
+
+但是这个规则有一些奇奇怪怪的规定，比如：
+
+![``` `a``b` ```](pics/markdown-it-backtick-corner-case-1.png)
+
+![``` `a``b`` ```](pics/markdown-it-backtick-corner-case-1.png)
+
+为了实现上面的corner case，里面有些比较啰嗦的东西，大家无需纠结。关于这个奇奇怪怪的规则，我们在后面会详细讲解。
+
+#### Inline rule：~~strike through~~
+匹配到`~~`的时候，先push一个类型是`text`的token，再将`content`设置为`~~`。然后还push了一个delimiter，包含以下字段
+
+```json
+marker: marker, // 标记符号，这里就是~
+length: 0,     // disable "rule of 3" length checks meant for emphasis
+jump:   i / 2, // for `~~` 1 marker = 2 characters，一般情况下就是0
+token:  state.tokens.length - 1, // 对应token的索引
+end:    -1, // 假如这是个开标记的话，用于balance pair这个post规则存储对应的闭标记索引，见下文
+open:   scanned.can_open, // 见下面的解释
+close:  scanned.can_close // 见下面的解释
+```
+
+根据规定，`~~`需要紧连着文本。如`~~a~~`是有效的标记。`~~ a~~`和`~~a ~~`就都是无效的标记，其中前者`can_open`为false，后者`can_close`为false。所以`~~a ~~ d~~`会被渲染为：![`~~a ~~ d~~`](pics/markdown-it-strike-through-1.png)。
+
+同时要注意的是，在tokenize阶段，不会对标记的开闭进行匹配。
+
+虽然没有每个规则都讲一遍，但上面这些规则几乎已经涵盖了方方面面的内容了。其余的规则读者有空可以自己研究。
 
 ### 3. Post规则
 `inline`和`block`不一样的地方在于`inline`多了post规则。根本原因是在解析inline本文时，很多标记是上下文相关的，如`**`。每一个合法的强调标记`**`必须是一对儿，而token是从前往后按顺序匹配规则的，所以需要这个post规则做后处理
