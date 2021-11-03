@@ -4,6 +4,7 @@ zhihu-url: https://zhuanlan.zhihu.com/p/390528313
 zhihu-title-image: pics/Along-the-River-During-the-Qingming-Festival.jpg
 ---
 
+
 WPL/s 是一个在 VS Code 中发布知乎文章/回答的插件。在 VS Code 中搜索 `zhihu` ，安装即可，如下图。虽然目前排在最后一个:cry:。
 
 ![在VS Code中搜索`zhihu`](./pics/vs-code-extension-search-zhihu.png)
@@ -45,7 +46,7 @@ WPL/s 是一个在 VS Code 中发布知乎文章/回答的插件。在 VS Code �
 | 好物推荐 | :x: |
 | 附件 | :x: |
 | 标签 | :x: *0 |
-| 草稿 | :x: |
+| 草稿 | :heavy_check_mark: *9|
 | 赞赏 | :x: |
 | 追更 | :x: |
 
@@ -59,6 +60,7 @@ WPL/s 是一个在 VS Code 中发布知乎文章/回答的插件。在 VS Code �
 6. - 同时支持本地图片和网络链接（暂时不支持 SVG 格式）
 7. 在元数据中指定
 8. 不支持为图片设置连接
+9. 草稿暂时只支持专栏文章
 
 
 # 部分格式提醒
@@ -134,6 +136,9 @@ SVG 格式暂不支持
 `![本地 SVG 图片](pics/emission9.svg)`
 ![网络 PNG 图片](https://raw.githubusercontent.com/jks-liu/WPL-s/master/res/media/vs-code-extension-search-zhihu.png)
 `![网络 SVG 图片](https://www.w3school.com.cn/svg/circle1.svg)`
+
+### 二维码
+![我的支付宝捐赠二维码](https://mobilecodec.alipay.com/show.htm?code=apnvimjdm3e9sa6hb0&picSize=S&d=true)
 
 
 ## 测试06：表格
