@@ -1,6 +1,7 @@
+#! https://zhuanlan.zhihu.com/p/404682867
 # 使用TypeScript发布NPM包（2021年版）
 
-本文受篇幅限制，很多东西无法讲得特别细致，详细信息可以查看文中链接。
+本文受篇幅限制，很多东西无法讲得特别细致，详细信息可以查看文中链接。本文[原始Markdown文本](https://github.com/jks-liu/zhihu/blob/master/publish-npm-package-using-typescript.md)保存在GitHub。
 
 # 步骤1：在GitHub上创建一个新的项目
 - 添加READMD
