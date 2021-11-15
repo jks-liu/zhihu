@@ -4,6 +4,10 @@ zhihu-url: https://zhuanlan.zhihu.com/p/400036665
 zhihu-title-image: pics/wpls-introduction.png
 ---
 
+1. markdown-it 源码分析及插件编写：parse 和 token（1/3）《==本文
+2. markdown-it [源码分析及插件编写：render（2/3）](https://zhuanlan.zhihu.com/p/401550182)
+3. markdown-it 源码分析及插件编写：Plugin 插件编写：尚无
+
 [markdown-it](https://github.com/markdown-it/markdown-it)可能是最流行的 JavaScript Markdown 库，它的使用很简单，并支持插件。
 
 但由于它的文档很是晦涩，想写一个插件也不知从何下手。所以这里只能使用最笨办法，读源代码。下面的内容希望能给编写插件的你带来一些启发。
@@ -280,16 +284,16 @@ StateInline.prototype.push = function (type, tag, nesting) {
 
 但是这个规则有一些奇奇怪怪的规定，比如：
 
-![``` `a``b` ```](pics/markdown-it-backtick-corner-case-1.png)
+![`a``b`](pics/markdown-it-backtick-corner-case-1.png)
 
-![``` `a``b`` ```](pics/markdown-it-backtick-corner-case-1.png)
+![`a``b``](pics/markdown-it-backtick-corner-case-2.png)
 
 为了实现上面的corner case，里面有些比较啰嗦的东西，大家无需纠结。关于这个奇奇怪怪的规则，我们在后面会详细讲解。
 
 #### Inline rule：~~strike through~~
 匹配到`~~`的时候，先push一个类型是`text`的token，再将`content`设置为`~~`。然后还push了一个delimiter，包含以下字段
 
-```json
+```js
 marker: marker, // 标记符号，这里就是~
 length: 0,     // disable "rule of 3" length checks meant for emphasis
 jump:   i / 2, // for `~~` 1 marker = 2 characters，一般情况下就是0
@@ -299,7 +303,7 @@ open:   scanned.can_open, // 见下面的解释
 close:  scanned.can_close // 见下面的解释
 ```
 
-根据规定，`~~`需要紧连着文本。如`~~a~~`是有效的标记。`~~ a~~`和`~~a ~~`就都是无效的标记，其中前者`can_open`为false，后者`can_close`为false。所以`~~a ~~ d~~`会被渲染为：![`~~a ~~ d~~`](pics/markdown-it-strike-through-1.png)。
+根据规定，`~~`需要紧连着文本。如`~~a~~`是有效的标记。`~~ a~~`和`~~a ~~`就都是无效的标记，其中前者`can_open`为false，后者`can_close`为false。所以`~~a ~~ d~~`会被渲染为：![~~a ~~ d~~](pics/markdown-it-strike-through-1.png)。
 
 同时要注意的是，在tokenize阶段，不会对标记的开闭进行匹配。
 
