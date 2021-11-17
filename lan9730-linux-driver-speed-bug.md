@@ -1,6 +1,8 @@
-#! https://zhuanlan.zhihu.com/p/389372005
-# 记一次LAN9730以太网MAC芯片Linux驱动网速过低的Bug
-
+---
+title: 记一次LAN9730以太网MAC芯片Linux驱动网速过低的Bug
+zhihu-url: https://zhuanlan.zhihu.com/p/389372005
+zhihu-tags: Linux 内核, linux驱动, 网卡驱动
+---
 
 事情的背景是这样的，根据需求，需要在一个很古老的Kernel版本上支持LAN9730。虽然这个古老的内核已经支持LAN9730，但是仅包含内置PHY的支持；而我这个项目需要使用外置PHY，所以就需要把最新内核的驱动移植过来。
 
