@@ -2,8 +2,8 @@
 title: VS Code插件WPL/s介绍及测试
 zhihu-url: https://zhuanlan.zhihu.com/p/390528313
 zhihu-title-image: pics/Along-the-River-During-the-Qingming-Festival.jpg
+zhihu-tags: Markdown 编辑器, Markdown, Visual Studio Code
 ---
-
 
 WPL/s 是一个在 VS Code 中发布知乎文章/回答的插件。在 VS Code 中搜索 `zhihu` ，安装即可，如下图。虽然目前排在最后一个:cry:。
 
@@ -45,7 +45,7 @@ WPL/s 是一个在 VS Code 中发布知乎文章/回答的插件。在 VS Code �
 | 视频 | :x: |
 | 好物推荐 | :x: |
 | 附件 | :x: |
-| 标签 | :x: *0 |
+| 标签 | :heavy_check_mark: *7 |
 | 草稿 | :heavy_check_mark: *9|
 | 赞赏 | :x: |
 | 追更 | :x: |
@@ -74,6 +74,7 @@ WPL/s 是一个在 VS Code 中发布知乎文章/回答的插件。在 VS Code �
 title: 请输入标题（若是回答的话，请删除本行）
 zhihu-url: 请输入知乎链接（删除本行发表新的知乎专栏文章）
 zhihu-title-image: 请输入专栏文章题图（若无需题图，删除本行）
+zhihu-tags: tag1, tag 2, tag-3, 标签4, 标签以半角逗号分隔, 只有知乎已经存在的标签才能添加成功
 注意: 所有的冒号是半角冒号，冒号后面有一个半角空格
 ---
 ```
