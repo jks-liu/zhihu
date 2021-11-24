@@ -7,7 +7,7 @@ zhihu-tags: Markdown 编辑器, Markdown语法, Markdown
 
 1. markdown-it 源码分析及插件编写：parse 和 token（1/3）《==本文
 2. markdown-it [源码分析及插件编写：render（2/3）](https://zhuanlan.zhihu.com/p/401550182)
-3. markdown-it 源码分析及插件编写：Plugin 插件编写：尚无
+3. markdown-it [源码分析及插件编写：Plugin 插件编写（2/3）](https://zhuanlan.zhihu.com/p/437391859)
 
 [markdown-it](https://github.com/markdown-it/markdown-it) 可能是最流行的 JavaScript Markdown 库，它的使用很简单，并支持插件。
 
@@ -328,7 +328,7 @@ close:  scanned.can_close // 见下面的解释
 
 ### 3. Post 规则
 
-`inline`和`block`不一样的地方在于`inline`多了 post 规则。根本原因是在解析 inline 本文时，很多标记是上下文相关的，如`**`。每一个合法的强调标记`**`必须是一对儿，而 token 是从前往后按顺序匹配规则的，所以需要这个 post 规则做后处理。
+`inline`和`block`不一样的地方在于`inline`多了 post 规则，也就是源代码中的`ruler2`。根本原因是在解析 inline 本文时，很多标记是上下文相关的，如`**`。每一个合法的强调标记`**`必须是一对儿，而 token 是从前往后按顺序匹配规则的，所以需要这个 post 规则做后处理。
 
 所以 post 规则最关键的一个规则就是给各种标记配对。上面的 tokenize 阶段，已经把所有的标记都给匹配了，但是还没有给每个标记正确地左右配对。
 

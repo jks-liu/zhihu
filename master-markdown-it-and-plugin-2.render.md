@@ -1,9 +1,14 @@
-#! https://zhuanlan.zhihu.com/p/401550182
-# markdown-it 源码分析及插件编写：render（2/3）
+---
+title: markdown-it源码分析及插件编写：render（2/3）
+zhihu-url: https://zhuanlan.zhihu.com/p/401550182
+zhihu-title-image: pics/wpls-introduction.png
+zhihu-tags: Markdown 编辑器, Markdown语法, Markdown
+---
+
 
 1. [markdown-it 源码分析及插件编写：parse 和 token（1/3）](https://zhuanlan.zhihu.com/p/400036665)
 2. markdown-it 源码分析及插件编写：render（2/3）《==本文
-3. markdown-it 源码分析及插件编写：插件原理和教程（3/3）：尚无
+3. [markdown-it 源码分析及插件编写：Plugin 插件编写（3/3）](https://zhuanlan.zhihu.com/p/437391859)
 
 下面我本来讲 render 的部分。核心部分很短，我不妨全部列在下面（lib\renderer.js 的最后）
 
