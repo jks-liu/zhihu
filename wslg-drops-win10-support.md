@@ -2,6 +2,7 @@
 title: WSLg 或将不支持 Windows 10：失望的小伙伴请愿去啦
 zhihu-title-image: https://github.com/microsoft/wslg/raw/main/docs/WSLg_ArchitectureOverview.png
 zhihu-tags: Windows 10, Windows 11, WSLg, WSL
+zhihu-url: https://zhuanlan.zhihu.com/p/437362868
 ---
 [WSLg](https://github.com/microsoft/wslg) 是一个致力于在 Windows 上运行 Linux GUI 程序（X11 和 Wayland）的子系统。
 十月的一个 PR，将 「Windows 10」 的字眼从主页 [README](https://github.com/microsoft/wslg) 中移除。
