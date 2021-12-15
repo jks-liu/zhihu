@@ -2,6 +2,7 @@
 title: 在 Docker 里编译 AOSP：踩坑记录
 zhihu-title-image: https://github.com/MobileDevOps/android-sdk-image/blob/master/docs/images/android-sdk-image.png?raw=true
 zhihu-tags: AOSP, Docker, Android
+zhihu-url: https://zhuanlan.zhihu.com/p/445863610
 ---
 
 本文介绍如何在 Docker 中编译 i.MX 8QuadXPlus[^1] 的 AOSP。
