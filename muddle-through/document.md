@@ -3,6 +3,7 @@ title: 水一个 GitHub 的 PR 之三：文档
 zhihu-title-image: https://cdn.pixabay.com/photo/2013/07/12/19/23/manual-154693_960_720.png
 zhihu-title-image-info: 来自 <https://pixabay.com/vectors/manual-documentation-docs-mandatory-154693/> Free for commercial use / No attribution required 
 zhihu-tags: GitHub, Pull Request, 文档
+zhihu-url: https://zhuanlan.zhihu.com/p/447796969
 ---
 
 [![zhihu-link-card: STEAD 文档美化](https://cdn.pixabay.com/photo/2013/07/12/19/23/manual-154693_960_720.png)](https://github.com/smousavi05/STEAD/pull/1)
