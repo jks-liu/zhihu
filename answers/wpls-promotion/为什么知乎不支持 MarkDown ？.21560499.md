@@ -1,7 +1,8 @@
 ---
 zhihu-url-1: https://www.zhihu.com/answer/2104845334
-zhihu-url: https://www.zhihu.com/answer/2104853089
+zhihu-url-2: https://www.zhihu.com/answer/2104853089
 ---
+
 推荐一个 VS Code 插件：WPL/s，可以使用 Markdown 发布知乎文章，回答问题。支持几乎所有的知乎支持的编辑格式（包括参考文献，表格，任务列表，公式等等）。
 
 测试使用[这个 Markdown 文件](https://github.com/jks-liu/zhihu/blob/master/WPLs-introduction-and-test.md)，测试结果可以查看[这篇知乎专栏文章](https://zhuanlan.zhihu.com/p/390528313)。

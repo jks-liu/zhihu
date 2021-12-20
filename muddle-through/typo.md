@@ -15,4 +15,4 @@ zhihu-url: https://zhuanlan.zhihu.com/p/410775493
 
 是不是很简单？
 
-注：题图来自<https://www.cjr.org/wp-content/uploads/2016/12/typo-wide.png>，作者 Merrill Perlman。
+注：题图来自 <https://www.cjr.org/language_corner/a_new_housing_community_in.php>，作者 Merrill Perlman。
