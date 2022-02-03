@@ -1,6 +1,6 @@
 ---
 title: 也许 VS Code 才是最好的 TeX IDE - 附模板
-zhihu-title-image: pics/1024px-XeTeX_Logo.svg.png
+zhihu-title-image: ../pics/1024px-XeTeX_Logo.svg.png
 图片信息: https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/XeTeX_Logo.svg/1024px-XeTeX_Logo.svg.png 公有领域
 zhihu-tags: TeX, XeTeX, XeLaTeX
 zhihu-url: https://zhuanlan.zhihu.com/p/448709781
