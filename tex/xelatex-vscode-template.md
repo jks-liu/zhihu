@@ -16,12 +16,13 @@ $ sudo apt install texlive
 
 然后在 VS Code 安装 「LaTeX Workshop」插件。[![zhihu-link-card: LaTeX Workshop - James Yu](https://james-yu.gallerycdn.vsassets.io/extensions/james-yu/latex-workshop/8.22.0/1636984769378/Microsoft.VisualStudio.Services.Icons.Default)](https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop)
 
-然后新建一个 TeX 文件，在开头加上
+然后新建一个 TeX 文件，在开头加上如下的 `magic comments`
 
 ```tex
 %!TeX encoding = utf8
 %!TEX TS-program = xelatex
 ```
+
 
 然后继续编写文档，文档保存时就会自动编译，点击预览按钮还能实时预览。
 
@@ -38,3 +39,14 @@ $ sudo apt install texlive
 默认是宋体；\textsf{衬线字体显示为黑体}；\texttt{等宽字体显示为仿宋}。
 \end{document}
 ```
+
+---
+
+**2022年2月5日更新**
+
+由于安全原因，`magic comments` 在最新的 `LaTeX Workshop` 插件中已默认关闭，详见 [#3027](https://github.com/James-Yu/LaTeX-Workshop/issues/3027)。如果你需要这个功能，请按照如下设置手动打开。
+
+```json
+latex-workshop.latex.build.forceRecipeUsage: false
+```
+
