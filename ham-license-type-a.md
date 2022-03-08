@@ -1,11 +1,23 @@
-#! https://zhuanlan.zhihu.com/p/344389487
-# 业余无线电（HAM）A类操作证考试教程
+---
+title: 业余无线电（HAM）A类操作证考试教程
+zhihu-title-image: https://c.pxhere.com/photos/e9/b7/antenna_yagi_beam_aerial_amateur_radio_ham_radio_transmitter_sky_hook-1219333.jpg!d
+zhihu-tags: 业余无线电, HAM, 电台
+zhihu-url: https://zhuanlan.zhihu.com/p/344389487
+note: 图片来自<https://pxhere.com/en/photo/1219333>，CC0 Public Domain
+---
 
 本文GitHub地址是<https://github.com/jks-liu/zhihu/blob/master/ham-license-type-a.md>。
 
 本文力求用最简单的语言，详细介绍你需要掌握的所有内容。让你既知其然，又知其所以然。
 
-最后更新时间：2021年4月21日
+最后更新时间：2022年3月8日
+
+注意新版题库v20211022已经更新，本文会稍后更新到新版，敬请期待。题库下载地址<http://www.crac.org.cn/News/List?type=6&y=>，你也可以在下面提到了「智谱APP」中练习。
+
+版本日志：
+- 2020年某月某日：初版
+- 2021年4月21日：修订版
+- 2022年3月8日：提示更新到新版题库。
 
 ## 简介
 
@@ -15,14 +27,14 @@
 
 ![ham type a ticket](pics/zhipu-app.png)
 
-友情提示：请携带2B铅笔，上海目前还是笔试，很多其它地区已经改为了机试。我考试的时候有一半的人都没带2B铅笔，临时去买的（也包括我）。
+友情提示：请携带2B铅笔，上海目前（2020年）还是笔试，很多其它地区已经改为了机试。我考试的时候有一半的人都没带2B铅笔，临时去买的（也包括我）。
 
 ![ham type a ticket](pics/ham-type-a-ticket.jpg)
 
 简单来说，想要合法地操作业余无线电设备，需要以下几个步骤：
 
 1. 通过考试（也就是本文所覆盖的内容）
-2. 购买或自制设备，当然你也可以先买设备在考试  
+2. 购买或自制设备，当然你也可以先买设备再考试  
    淘宝剁手之前注意先到[中国无线电管理网站](http://www.srrc.org.cn/wp_search.aspx)查询即将购买的设备有没有有效期内的核准代码，注意是针对业余业务的核准码。
 3. 携带设备去指定机构验机。如果你的机器是购买的并且有上条所说的针对业余业务的核准码，可以免检，跳过此步。
 4. 申请无线电台许可
