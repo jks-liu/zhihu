@@ -2,6 +2,7 @@
 title: PGF/TikZ 3D 作图
 zhihu-title-image: ../pics/tex/640px-Latitude_and_Longitude_of_the_Earth.svg.png
 zhihu-tags: tikz-pgf, TeX, 3D
+zhihu-url: https://zhuanlan.zhihu.com/p/494100190
 ---
 
 # 背景介绍
@@ -137,12 +138,12 @@ $$
 	\draw[current plane] circle (\R);
 ```
 
-这样我们就可以画一个维度了。
+这样我们就可以画一个经线了。
 
 ![第一版经度](../pics/tex/spherical-earth-longitude-solid-line.png)
 
 从这里我们可以看到两个问题：
-1. 纬线其实是一个半圆，所以上图其实是「东经 45°」和「西经 135°」的经线。但通常我们都会画一个圆，所以我们忽略这个问题。
+1. 经线其实是一个半圆，所以上图其实是「东经 45°」和「西经 135°」的经线。但通常我们都会画一个圆，所以我们忽略这个问题。
 2. 经线其实有一段是被地球挡住的，我们应该看不见，所以应该画成虚线
 
 所以我们通过以下代码计算出交点角度，其实对于这个角度是怎么算出来的我也是一知半解，希望知道的读者能详细解释一下：
@@ -198,7 +199,7 @@ $$
 }
 ```
 
-然后通过一下代码就可以画出一个纬线
+然后通过以下代码就可以画出一个纬线
 
 ```tex
 \DrawLatitude{\R}{30};
@@ -211,12 +212,162 @@ $$
 我们假设有左右两个点$(\lambda_{Lhs}, \phi_{Lhs})$和$(\lambda_{Rhs}, \phi_{Rhs})$，
 我们按照以下思想画出这个大圆弧。
 
-1. 以经度0和纬度0为起点，沿着赤道画一个角度为c的圆弧。
+1. 以经度0和纬度0为起点，沿着0°经线向北画一个角度为c的圆弧。
 2. 沿着x轴旋转$\alpha\degree$
 3. 绕z轴旋转$\phi_{Lhs}\degree$
 4. 然后绕y旋转$\lambda_{Lhs}\degree$
-5. 最后再绕x轴旋转$\gamma\degree$
+5. 最后再绕x轴旋转$\gamma\degree$（下文有时也将这个角称为$\zeta$）
 
 上面的步骤中有两个未知量，一个是角度c，一个是$\alpha$。
 
+## 计算角度 c
 
+显然这个角度 c 就是我们要画的大圆弧弧长（由于我们这里是单位圆球，所以在弧度制不用区分弧长还是角度，请读者依据上下文自由切换）。所以这里我们的问题就变成了已知两个点$(\lambda_{Lhs}, \phi_{Lhs})$和$(\lambda_{Rhs}, \phi_{Rhs})$，求它们的弧长。
+
+这个问题有[现成的公式](https://www.movable-type.co.uk/scripts/latlong.html)（这里就不作推导了）：
+
+$$
+a = sin²(Δφ/2) + cos φ1 ⋅ cos φ2 ⋅ sin²(Δλ/2) \\
+c = 2 ⋅ atan2(\sqrt{a}, \sqrt{1−a})
+$$
+
+## 计算 $\alpha$
+
+这个 $\alpha$ 在球面三角学中叫 Bearing（差一个负号），也有[现成的公式](https://www.movable-type.co.uk/scripts/latlong.html)
+
+$$
+y = sin Δλ ⋅ cos φ2 \\
+x = cos φ1 ⋅ sin φ2 − sin φ1 ⋅ cos φ2 ⋅ cos Δλ \\
+θ = atan2( y , x ) \\
+\alpha = -θ
+$$
+
+上面的步骤 2~5 都是旋转，我们用矩阵表示，由于比较长，我们分成两步。下面的$(\lambda, \phi)$指的是$(\lambda_{Lhs}, \phi_{Lhs})$。
+
+步骤 2~4：
+$$
+  \left[\begin{array}{ccc}
+    \cos\lambda & 0 & \sin\lambda\\
+    0 & 1& 0\\
+    -\sin\lambda & 0 & \cos\lambda\\
+  \end{array}\right]
+  \left[\begin{array}{ccc}
+    \cos\varphi & -\sin\varphi & 0\\
+    \sin\varphi & \cos\varphi & 0\\
+    0 & 0& 1\\
+  \end{array}\right]
+  \left[\begin{array}{ccc}
+  1 & 0 & 0\\
+  0 & \cos\alpha & -\sin\alpha\\
+  0 & \sin\alpha & \cos\alpha\\
+\end{array}\right] = \\
+\left[\begin{array}{ccc}
+  \cos\lambda & 0 & \sin\lambda\\
+  0 & 1& 0\\
+  -\sin\lambda & 0 & \cos\lambda\\
+\end{array}\right]
+\left[\begin{array}{ccc}
+  \cos\varphi & -\sin\varphi\cos\alpha & \sin\varphi\sin\alpha\\
+  \sin\varphi & \cos\varphi\cos\alpha& -\cos\varphi\sin\alpha\\
+  0 & \sin\alpha & \cos\alpha\\
+\end{array}\right] = \\
+\left[\begin{array}{ccc}
+  \cos\lambda\cos\varphi & -\cos\lambda\sin\varphi\cos\alpha+\sin\lambda\sin\alpha & \cos\lambda\sin\varphi\sin\alpha+\sin\lambda\cos\alpha\\
+  \sin\varphi & \cos\varphi\cos\alpha& -\cos\varphi\sin\alpha\\
+  -\sin\lambda\cos\varphi & \sin\lambda\sin\varphi\cos\alpha+\cos\lambda\sin\alpha & -\sin\lambda\sin\varphi\sin\alpha+\cos\lambda\cos\alpha\\
+\end{array}\right]
+$$
+
+在加上步骤5：
+$$
+  \left[\begin{array}{ccc}
+    1 & 0 & 0\\
+    0 & \cos\zeta & -\sin\zeta\\
+    0 & \sin\zeta & \cos\zeta\\
+  \end{array}\right]
+\left[\begin{array}{ccc}
+  \cos\lambda\cos\varphi & -\cos\lambda\sin\varphi\cos\alpha+\sin\lambda\sin\alpha & \cos\lambda\sin\varphi\sin\alpha+\sin\lambda\cos\alpha\\
+  \sin\varphi & \cos\varphi\cos\alpha& -\cos\varphi\sin\alpha\\
+  -\sin\lambda\cos\varphi & \sin\lambda\sin\varphi\cos\alpha+\cos\lambda\sin\alpha & -\sin\lambda\sin\varphi\sin\alpha+\cos\lambda\cos\alpha\\
+\end{array}\right]
+= \\
+\left[\begin{array}{ccc}
+  \cos\lambda\cos\varphi & -\cos\lambda\sin\varphi\cos\alpha+\sin\lambda\sin\alpha & \cos\lambda\sin\varphi\sin\alpha+\sin\lambda\cos\alpha\\
+  \cos\zeta\sin\varphi+\sin\zeta\sin\lambda\cos\varphi & \cos\zeta\cos\varphi\cos\alpha-\sin\zeta(\sin\lambda\sin\varphi\cos\alpha+\cos\lambda\sin\alpha)& -\cos\zeta\cos\varphi\sin\alpha+\sin\zeta(\sin\lambda\sin\varphi\sin\alpha-\cos\lambda\cos\alpha)\\
+  \sin\zeta\sin\varphi-\cos\zeta\sin\lambda\cos\varphi & \sin\zeta\cos\varphi\cos\alpha+\cos\zeta(\sin\lambda\sin\varphi\cos\alpha+\cos\lambda\sin\alpha)& -\sin\zeta\cos\varphi\sin\alpha-\cos\zeta(\sin\lambda\sin\varphi\sin\alpha-\cos\lambda\cos\alpha)\\
+\end{array}\right]
+$$
+
+同上，由于我们只需要在 xy 平面地投影，以及原始的 0° 经线的 z 轴坐标为0，所以只需要上边矩阵的左上角。
+
+$$
+\left[\begin{array}{ccc}
+  \cos\lambda\cos\varphi & -\cos\lambda\sin\varphi\cos\alpha+\sin\lambda\sin\alpha \\
+  \cos\zeta\sin\varphi+\sin\zeta\sin\lambda\cos\varphi & \cos\zeta\cos\varphi\cos\alpha-\sin\zeta(\sin\lambda\sin\varphi\cos\alpha+\cos\lambda\sin\alpha) \\
+\end{array}\right]
+$$
+
+将上面的公式写成 tex 代码（整理得不太好，后期有空再完善/(ㄒoㄒ)/~~）：
+
+```tex
+%% 任意大圆
+
+% 参数1：【可选】变换的名字，默认 `current plane`
+% 参数2：极点的倾斜角
+% 参数3：左侧点的经度
+% 参数4：左侧点的纬度
+% 参数5：右侧点的经度
+% 参数6：右侧点的纬度
+\newcommand\ArcThreeDPlane[6][current plane]{
+    \pgfmathsetmacro\angleZeta{#2}
+    \pgfmathsetmacro\lambdaLhs{#3}
+    \pgfmathsetmacro\phiLhs{#4}
+    \pgfmathsetmacro\lambdaRhs{#5}
+    \pgfmathsetmacro\phiRhs{#6}
+    \pgfmathsetmacro\deltaLambda{#5-#3}
+    \pgfmathsetmacro\deltaPhi{#6-#4}
+    \pgfmathsetmacro\aVar{sin(\deltaPhi/2)*sin(\deltaPhi/2)+cos(\phiLhs)*cos(\phiRhs)*sin(\deltaLambda/2)*sin(\deltaLambda/2)}
+    \pgfmathsetmacro\cVar{2*atan2(sqrt(\aVar), sqrt(1-\aVar))}
+    \pgfmathsetmacro\yVar{sin(\deltaLambda)*cos(\phiRhs)}
+    \pgfmathsetmacro\xVar{cos(\phiLhs)*sin(\phiRhs)-sin(\phiLhs)*cos(\phiRhs)*cos(\deltaLambda)}
+    \pgfmathsetmacro\thetaVar{-atan2(\yVar, \xVar)}
+	\tikzset{#1/.estyle={cm={cos(\lambdaLhs)*cos(\phiLhs), cos(\angleZeta)*sin(\phiLhs)+sin(\angleZeta)*sin(\lambdaLhs)*cos(\phiLhs), -cos(\lambdaLhs)*sin(\phiLhs)*cos(\thetaVar)+sin(\lambdaLhs)*sin(\thetaVar), cos(\angleZeta)*cos(\phiLhs)*cos(\thetaVar)-sin(\angleZeta)*(sin(\lambdaLhs)*sin(\phiLhs)*cos(\thetaVar)+cos(\lambdaLhs)*sin(\thetaVar)), (0,0)}}}
+}
+% 参数1：【可选】极点的倾斜角，默认 `\AngleGamma`
+% 参数2：地球半径
+% 参数3：左侧点的经度
+% 参数4：左侧点的纬度
+% 参数5：右侧点的经度
+% 参数6：右侧点的纬度
+\newcommand\DrawArcThreeD[6][\AngleGamma]{
+    \pgfmathsetmacro\angleZeta{#1}
+    \pgfmathsetmacro\lambdaLhs{#3}
+    \pgfmathsetmacro\phiLhs{#4}
+    \pgfmathsetmacro\lambdaRhs{#5}
+    \pgfmathsetmacro\phiRhs{#6}
+    \pgfmathsetmacro\deltaLambda{#5-#3}
+    \pgfmathsetmacro\deltaPhi{#6-#4}
+    \pgfmathsetmacro\aVar{sin(\deltaPhi/2)*sin(\deltaPhi/2)+cos(\phiLhs)*cos(\phiRhs)*sin(\deltaLambda/2)*sin(\deltaLambda/2)}
+    \pgfmathsetmacro\cVar{2*atan2(sqrt(\aVar), sqrt(1-\aVar))}
+    \pgfmathsetmacro\yVar{sin(\deltaLambda)*cos(\phiRhs)}
+    \pgfmathsetmacro\xVar{cos(\phiLhs)*sin(\phiRhs)-sin(\phiLhs)*cos(\phiRhs)*cos(\deltaLambda)}
+    \pgfmathsetmacro\thetaVar{-atan2(\yVar, \xVar)}
+	\ArcThreeDPlane{#1}{#3}{#4}{#5}{#6}
+    \draw [current plane] (#2, 0) arc (0:\cVar:#2);
+}
+```
+
+然后我们就可以通过
+
+```tex
+\DrawArcThreeD{\R}{-135}{30}{-45}{60};
+```
+
+画出一个圆弧了。
+
+![3D 圆弧](./../pics/tex/spherical-earth-3d-arc.png)
+
+完整的代码可以从 [GitHub](https://github.com/jks-liu/jks-template/blob/master/xelatex/jks-template-3d.tex) 获取。
+
+# 后续
+上面的任意圆弧还没有不可见部分表示为虚线的功能，后期会完善。
