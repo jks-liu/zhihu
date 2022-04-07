@@ -64,7 +64,7 @@ zhihu-url: https://zhuanlan.zhihu.com/p/494100190
 
 ![地理座標系 -- 图片来自 WikiMedia，属于公有领域](../pics/tex/640px-Latitude_and_Longitude_of_the_Earth.svg.png)
 
-可见为了美观，有时地球需要向前倾斜一点。我们不妨定义这个角度为 $\gamma$，上图中，左图 $\gamma=0$，右图 $\gamma=25\degree$（大概）。
+可见为了美观，有时地球需要向前倾斜一点。我们不妨定义这个角度为 $\gamma$，上图中，左图 $\gamma=0$，右图 $\gamma=25°$（大概）。
 
 # 地球的经线
 
@@ -72,9 +72,9 @@ zhihu-url: https://zhuanlan.zhihu.com/p/494100190
 
 由于 tikz 的是一个平面的作图系统，右为 x 的正向，上为 y 的正向。为了和我们的三维作图相适应，我们以右手系的形式想象出一个指向我们的 z 方向，那么 tikz 实际显示的图片就是三维图形在 xy 平面的投影。
 
-我们不妨想象一下一个 $\lambda\degree$ 的经线是如何从 0° 经线变换而来的：
-1. 绕 y 轴旋转 $\lambda\degree$ （东正西负）
-2. 绕 x 轴旋转 $\gamma\degree$
+我们不妨想象一下一个 $\lambda°$ 的经线是如何从 0° 经线变换而来的：
+1. 绕 y 轴旋转 $\lambda°$ （东正西负）
+2. 绕 x 轴旋转 $\gamma°$
 
 类似的在我们的代码中也分两步走：
 1. 画一个 0° 经线
@@ -213,10 +213,10 @@ $$
 我们按照以下思想画出这个大圆弧。
 
 1. 以经度0和纬度0为起点，沿着0°经线向北画一个角度为c的圆弧。
-2. 沿着x轴旋转$\alpha\degree$
-3. 绕z轴旋转$\phi_{Lhs}\degree$
-4. 然后绕y旋转$\lambda_{Lhs}\degree$
-5. 最后再绕x轴旋转$\gamma\degree$（下文有时也将这个角称为$\zeta$）
+2. 沿着x轴旋转$\alpha°$
+3. 绕z轴旋转$\phi_{Lhs}°$
+4. 然后绕y旋转$\lambda_{Lhs}°$
+5. 最后再绕x轴旋转$\gamma°$（下文有时也将这个角称为$\zeta$）
 
 上面的步骤中有两个未知量，一个是角度c，一个是$\alpha$。
 
