@@ -32,3 +32,6 @@ ShareX 是一个**开源**的屏幕录制和截图软件。最近想要录制声
 2. 如下图所示，将 `-f dshow -i audio="virtual-audio-capturer" -filter_complex amix=inputs=2:duration=longest` 添加到额外的命令行参数中。![](./pics/sharex-additional-cmd-args.png)
 
 这样就可以同时录制系统声音和麦克风声音了。
+
+20220520更新：  
+实际使用发现，系统声音和麦克风声音有不同步的情况。具体原因还有待调查。
