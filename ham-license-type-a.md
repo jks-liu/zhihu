@@ -1,7 +1,7 @@
 ---
 title: 业余无线电（HAM）A类操作证考试教程
 zhihu-title-image: https://c.pxhere.com/photos/e9/b7/antenna_yagi_beam_aerial_amateur_radio_ham_radio_transmitter_sky_hook-1219333.jpg!d
-zhihu-tags: 业余无线电, HAM, 电台
+zhihu-tags: 业余无线电, HAM, 电台, 业余无线电台
 zhihu-url: https://zhuanlan.zhihu.com/p/344389487
 note: 图片来自<https://pxhere.com/en/photo/1219333>，CC0 Public Domain
 ---
