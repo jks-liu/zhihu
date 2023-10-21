@@ -5,12 +5,13 @@ def sort_txt(txt):
         lines = f.read().decode('gbk')
     
     qa = lines.replace("\r\n", "\n").split("\n\n")
+    qa = [x for x in qa if len(x)>0 and x[0]=='[']
     return sorted(qa)
 
 def save_sorted(txt, qa):
     lines = "\n\n".join(qa)
 
-    with open(txt, 'w') as f:
+    with open(txt, 'w', encoding='utf-8') as f:
         f.write(lines)
 
 
@@ -19,8 +20,10 @@ def main():
     save_sorted(txt+".sorted.txt", sort_txt(txt))
 
 def main2():
-    txt_a = "TXT题库包(v20210924)/A类题库(v20210924).txt"
-    txt_b = "TXT题库包(v20210924)/B类题库(v20210924).txt"
+    # txt_a = r"resource\ham-quiz-bank\2017-1031 题库电子版(v171031)\A_分类题库(供公布用)(201710311221).txt"
+    # txt_b = r"resource\ham-quiz-bank\TXT题库包(v20211022)\A类题库(v20211022).txt"
+    txt_a = r"resource\ham-quiz-bank\TXT题库包(v20211022)\A类题库(v20211022).txt"
+    txt_b = r"resource\ham-quiz-bank\TXT题库包(v20211022)\B类题库(v20211022).txt"
 
     sorted_a = sort_txt(txt_a)
     sorted_b = sort_txt(txt_b)
@@ -41,7 +44,7 @@ def main2():
             DELETE.append(sorted_a[ia])
             ia = ia+1
         elif key_a == key_b:
-            if sorted_a[ia] != sorted_b[ib]:
+            if sorted_a[ia].replace(" ", "").replace("–", "-") != sorted_b[ib].replace(" ", "").replace("–", "-"):
                 UPDATE.append(sorted_a[ia])
                 UPDATE.append(sorted_b[ib])
             ia = ia+1
